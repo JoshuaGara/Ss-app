@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Screenshot App</title>
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/onsenui/css/onsen-css-components.min.css"
+    />
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  </head>
+
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap");
+    #result {
+      display: flex;
+      text-align: center;
+      min-height: 70vh;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+    }
+
+    #activity {
+      font-size: 1.5rem;
+      color: black;
+      font-weight: 500;
+      font-family: "Playfair Display", serif;
+    }
+  </style>
+
+  <body>
+    <ons-page>
+      <ons-toolbar>
+        <div class="center">What Should I Do</div>
+        <div class="right">
+          <ons-toolbar-button>
+            <a download id="screenshot">Screenshot</a>
+          </ons-toolbar-button>
+        </div>
+      </ons-toolbar>
+
+      <ons-fab position="bottom right" onclick="generateKata()">
+        <ons-icon icon="md-search"></ons-icon>
+      </ons-fab>
+
+      <div id="result">
+        <h1 id="activity"></h1>
+      </div>
+    </ons-page>
+
+    <script>
+      async function generateKata() {
+        const result = document.getElementById("result");
+        const activity = document.getElementById("activity");
+        const screenshot = document.getElementById("screenshot");
+
+        const url = "https://www.boredapi.com/api/activity";
+        const response = await fetch(url);
+        const api = await response.json();
+
+        activity.textContent = api.activity;
+
+        let count = 0;
+
+        screenshot.addEventListener("click", () => {
+          count && location.reload();
+
+          html2canvas(result).then((callback) => {
+            screenshot.setAttribute("href", callback.toDataURL("image/png"));
+            screenshot.textContent = "📷";
+            count++;
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
